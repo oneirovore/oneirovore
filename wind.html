@@ -28,7 +28,9 @@
 
   display: flex;
   gap: 28px;
-  align-items: flex-start;
+  align-items: center;
+
+  flex-wrap: nowrap; /* ✔ 防换行 */
 
   font-size: 12px;
   letter-spacing: 3px;
@@ -39,6 +41,10 @@
   color: inherit;
   text-decoration: none;
   transition: 0.28s ease;
+
+  white-space: nowrap;   /* ✔ 不换行 */
+  word-break: keep-all;  /* ✔ 中文不断字 */
+  flex-shrink: 0;        /* ✔ 不压缩 */
 }
 
 .nav a:hover {
@@ -49,7 +55,7 @@
 .wrap {
   max-width: 520px;
   margin: 0 auto;
-  padding: 80px 20px 80px;
+  padding: 90px 20px 80px;
 
   display: flex;
   flex-direction: column;
