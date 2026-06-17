@@ -47,9 +47,16 @@
 }
 
 .wrap {
-  max-width: 560px;
+  max-width: 520px;
   margin: 0 auto;
-  padding: 80px 20px;
+  padding: 80px 20px 80px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  /* ⭐关键：锁定视觉稳定性 */
+  position: relative;
 }
 
     /* 深夜底色 */
