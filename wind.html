@@ -16,8 +16,41 @@
       background: #06070b;
       color: #e8e8e8;
       font-family: "PingFang SC", "Microsoft YaHei", "Noto Serif SC", serif;
-      overflow-x: hidden;
+      
     }
+
+.nav {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+
+  display: flex;
+  gap: 28px;
+  align-items: flex-start;
+
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: rgba(232,232,232,0.46);
+}
+
+.nav a {
+  color: inherit;
+  text-decoration: none;
+  transition: 0.28s ease;
+}
+
+.nav a:hover {
+  color: rgba(255,255,255,0.86);
+  text-shadow: 0 0 18px rgba(180,190,220,0.18);
+}
+
+.wrap {
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 80px 20px;
+}
 
     /* 深夜底色 */
     .bg {
@@ -348,39 +381,6 @@
   );
 
   box-shadow: 0 0 12px rgba(120,140,180,0.08);
-}
-
-.nav {
-  position: absolute;
-  top: 24px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-
-  display: flex;
-  gap: 28px;
-  align-items: flex-start;
-
-  font-size: 12px;
-  letter-spacing: 3px;
-  color: rgba(232,232,232,0.46);
-}
-
-.nav a {
-  color: inherit;
-  text-decoration: none;
-  transition: 0.28s ease;
-}
-
-.nav a:hover {
-  color: rgba(255,255,255,0.86);
-  text-shadow: 0 0 18px rgba(180,190,220,0.18);
-}
-
-.wrap {
-  max-width: 560px;
-  margin: 0 auto;
-  padding: 80px 20px;
 }
 
   </style>
