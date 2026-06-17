@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>ONEIROVORE | Player</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+  color: #e8e8e8;
+
+  background:
+    radial-gradient(circle at 50% 20%, rgba(120,130,160,0.18), transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(80,90,120,0.10), transparent 45%),
+    radial-gradient(circle at 80% 60%, rgba(40,45,70,0.25), transparent 55%),
+    linear-gradient(180deg, #0a0c12 0%, #05060a 70%, #030407 100%);
+}
+
+/* NAV */
+.nav {
+  position: fixed;
+  top: 24px;
+  right: 36px;
+  display: flex;
+  gap: 28px;
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: rgba(232,232,232,0.46);
+  z-index: 10;
+}
+
+.nav a {
+  color: inherit;
+  text-decoration: none;
+}
+.nav a:hover {
+  color: #fff;
+}
+
+/* LAYOUT */
+.wrap {
+  display: flex;
+  height: 100vh;
+}
+
+/* LEFT */
+.left {
+  width: 40%;
+  padding: 60px 40px;
+  border-right: 1px solid rgba(255,255,255,0.08);
+}
+
+.title {
+  font-size: 14px;
+  letter-spacing: 6px;
+  opacity: 0.5;
+  margin-bottom: 30px;
+}
+
+.album-info {
+  font-size: 20px;
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+}
+
+.divider {
+  height: 1px;
+  margin: 14px 0 20px;
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255,255,255,0.25),
+    transparent
+  );
+}
+
+.album-desc {
+  margin: 0 0 26px;
+  padding: 0 0 22px;
+
+  border-bottom: 1px solid rgba(255,255,255,0.035);
+
+  font-size: 12px;
+  line-height: 1.9;
+  letter-spacing: 0.8px;
+  color: rgba(200,205,215,0.42);
+}
+
+.album-desc .label {
+  color: rgba(230,235,245,0.56);
+}
+
+.album-desc .text {
+  color: rgba(200,205,215,0.36);
+}
+
+/* TRACKS */
+.track {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  column-gap: 18px;
+  padding: 13px 0;
+  border-top: 1px solid rgba(255,255,255,0.03);
+  cursor: pointer;
+  transition: 0.28s ease;
+}
+
+.track:first-child {
+  border-top: none;
+}
+
+.track span {
+  color: rgba(232,232,232,0.35);
+  font-size: 13px;
+}
+
+.track strong {
+  font-size: 15px;
+  font-weight: 400;
+  color: rgba(240,240,240,0.8);
+}
+
+.track:hover {
+  transform: translateX(6px);
+}
+
+.track.active strong {
+  color: #fff;
+  text-shadow: 0 0 18px rgba(160,180,255,0.18);
+}
+
+/* RIGHT */
+.right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.cover {
+  width: 300px;
+  height: 300px;
+  object-fit: cover;
+  margin-bottom: 25px;
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+.now {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.sub {
+  font-size: 12px;
+  opacity: 0.4;
+  margin-bottom: 30px;
+}
+
+/* PLAYING STATE */
+body.playing {
+  animation: breath 6s ease-in-out infinite;
+}
+
+@keyframes breath {
+  0% { filter: brightness(0.9); }
+  50% { filter: brightness(1.05); }
+  100% { filter: brightness(0.9); }
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="index.html">HOME</a>
+  <a href="#">焚野</a>
+  <a href="wind.html">风徵</a>
+  <a href="#">鸾音</a>
+</nav>
+
+<div class="wrap">
+
+  <!-- LEFT -->
+  <div class="left">
+  <div class="title">ONEIROVORE · PLAYER</div>
+
+  <div class="album-info" id="albumInfo"></div>
+  <div class="divider"></div>
+
+  <div class="album-desc" id="albumDesc"></div>
+
+  <div id="trackList"></div>
+</div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <img src="images/album.jpg" class="cover" />
+
+    <div class="now" id="now"></div>
+    <div class="sub" id="sub"></div>
+
+    <audio id="audio" controls></audio>
+  </div>
+
+</div>
+
+<script>
+
+/* ALBUM DATA */
+const albums = {
+  wind: {
+    artist: "风徵",
+    album: "夜水集",
+    sub: "ONEIROVORE · 风徵",
+    desc: "夜是缓慢下沉的声音。风徵在水影、旧桥与远山之间，唱出一组冷感、空灵、迷幻的夜行曲。",
+    songs: [
+      { name: "照影", file: "audio/zhaoying.wav" },
+      { name: "慢慢的", file: "audio/manmande.wav" },
+      { name: "三条鱼", file: "audio/santiaoyu.wav" },
+      { name: "鸾鸟自歌", file: "audio/luanniao-zige.wav" },
+      { name: "那只停下来看蚂蚁搬家的鹰", file: "audio/ying.wav" },
+      { name: "追声", file: "audio/zhuisheng.wav" },
+      { name: "渡我二毛", file: "audio/duwoermao.wav" },
+      { name: "山海·之间", file: "audio/shanhai-zhijian.wav" }
+    ]
+    },
+
+  fire: {
+    artist: "焚野",
+    album: "食梦者",
+    sub: "ONEIROVORE · 焚野",
+    desc: "火从荒原深处醒来，鼓声压住山海，焚野以低吼、金属与判词，唱出神话背后的荒凉与怒意。",
+    songs: [
+      { name: "山海·之间", file: "audio/shanhai-zhijian.wav" },
+      { name: "饕餮", file: "audio/taotie.wav" },
+      { name: "穷奇", file: "audio/qiongqi.wav" }
+    ]
+    },
+
+  luanyin: {
+    artist: "鸾音",
+    album: "弦中莲",
+    sub: "ONEIROVORE · 鸾音",
+    desc: "古筝声落入冷水，莲影在弦中开合。鸾音以清冷、幽玄与层叠女声，唱一组无来无去的梦。",
+    songs: [
+      { name: "琴骨", file: "audio/qingu.wav" },
+      { name: "弦中莲", file: "audio/xianzhonglian.wav" },
+      { name: "三生愿", file: "audio/sanshengyuan.wav" }
+    ]
+    }
+};
+
+/* ROUTE */
+const params = new URLSearchParams(window.location.search);
+const artistKey = params.get("artist") || "wind";
+const trackIndex = parseInt(params.get("track") || "0", 10);
+
+const currentAlbum = albums[artistKey] || albums.wind;
+let songs = currentAlbum.songs;
+
+/* RENDER */
+function renderAlbum() {
+  const albumInfo = document.getElementById("albumInfo");
+  const albumDesc = document.getElementById("albumDesc");
+  const trackList = document.getElementById("trackList");
+
+  if (!albumInfo || !albumDesc || !trackList) {
+    console.error("页面缺少 albumInfo / albumDesc / trackList 容器");
+    return;
+  }
+
+  albumInfo.innerText =
+    currentAlbum.artist + "《" + currentAlbum.album + "》";
+
+  albumDesc.innerHTML =
+    '<span class="label">专辑介绍：</span>' +
+    '<span class="text">' + currentAlbum.desc + '</span>';
+
+  trackList.innerHTML = "";
+
+  songs.forEach(function(song, index) {
+    const div = document.createElement("div");
+    div.className = "track";
+
+    div.innerHTML = `
+      <span>${String(index + 1).padStart(2, "0")}</span>
+      <strong>${song.name}</strong>
+    `;
+
+    div.onclick = function() {
+      playSong(index);
+    };
+
+    trackList.appendChild(div);
+  });
+}
+
+/* PLAY */
+function playSong(i) {
+
+  const song = songs[i];
+  const audio = document.getElementById("audio");
+  const now = document.getElementById("now");
+  const sub = document.getElementById("sub");
+  const tracks = document.querySelectorAll(".track");
+
+  if (!song || !audio || !now) return;
+
+  document.body.classList.remove("playing");
+
+  now.innerText = song.name;
+  sub.innerText = currentAlbum.sub;
+
+  audio.src = song.file;
+  audio.load();
+
+  tracks.forEach((el, idx) => {
+    el.classList.toggle("active", idx === i);
+  });
+
+  /* URL同步（关键优化） */
+  history.replaceState(null, "", `?artist=${artistKey}&track=${i}`);
+
+  audio.play()
+    .then(() => {
+      document.body.classList.add("playing");
+    })
+    .catch(err => {
+      console.log("播放被浏览器限制：", err);
+    });
+}
+
+/* INIT */
+window.addEventListener("DOMContentLoaded", () => {
+  renderAlbum();
+
+  const idx = isNaN(trackIndex) ? 0 : trackIndex;
+  playSong(idx);
+});
+
+</script>
+
+</body>
+</html>

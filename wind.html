@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>风徵 | ONEIROVORE</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #06070b;
+      color: #e8e8e8;
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Serif SC", serif;
+      overflow-x: hidden;
+    }
+
+    /* 深夜底色 */
+    .bg {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 50% 20%, rgba(120,130,160,0.18), transparent 40%),
+    radial-gradient(circle at 20% 80%, rgba(80,90,120,0.10), transparent 45%),
+    radial-gradient(circle at 80% 60%, rgba(40,45,70,0.25), transparent 55%),
+    linear-gradient(180deg, #0a0c12 0%, #05060a 70%, #030407 100%);
+  z-index: 0;
+  animation: breathe 10s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  0% { filter: brightness(0.85); }
+  50% { filter: brightness(1.05); }
+  100% { filter: brightness(0.85); }
+}
+
+    /* 雾层 */
+    .mist {
+  position: fixed;
+  inset: -40%;
+  background:
+    radial-gradient(circle, rgba(255,255,255,0.035), transparent 60%);
+  z-index: 1;
+  animation: drift 18s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes drift {
+  0% { transform: translate(0,0); }
+  50% { transform: translate(3%,2%); }
+  100% { transform: translate(0,0); }
+}
+
+    @keyframes mistMove {
+      0% { transform: translate3d(0,0,0) rotate(0deg); }
+      50% { transform: translate3d(4%,3%,0) rotate(3deg); }
+      100% { transform: translate3d(0,0,0) rotate(0deg); }
+    }
+
+    /* 细微颗粒 */
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0.12;
+      background-image:
+        linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+      background-size: 3px 3px;
+      mix-blend-mode: soft-light;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 3;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 56px 24px;
+      text-align: center;
+    }
+
+    .content {
+      width: 100%;
+      max-width: 560px;
+      animation: fadeIn 1.6s ease both;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(18px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 68px;
+      line-height: 1;
+      font-weight: 300;
+      letter-spacing: 14px;
+      color: rgba(240, 240, 245, 0.92);
+      text-shadow: 0 0 28px rgba(170, 180, 210, 0.14);
+    }
+
+    .sub {
+      margin-top: 22px;
+      font-size: 14px;
+      letter-spacing: 7px;
+      opacity: 0.52;
+      font-family: Arial, "PingFang SC", sans-serif;
+    }
+
+    .portrait-wrap {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin: 42px auto 0;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.10);
+  box-shadow:
+    0 0 60px rgba(120,140,180,0.10),
+    0 0 120px rgba(0,0,0,0.6);
+  z-index: 3;
+  animation: float 7s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0); }
+}
+
+    .portrait-wrap::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgba(5,6,10,0.04), rgba(5,6,10,0.35)),
+        radial-gradient(circle at 50% 42%, transparent 35%, rgba(5,6,10,0.32) 100%);
+      pointer-events: none;
+    }
+
+    .portrait {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      filter: grayscale(0.22) contrast(1.08) brightness(0.82) saturate(0.72);
+      transform: scale(1.02);
+    }
+
+    .desc {
+      margin: 42px auto 0;
+  max-width: 520px;
+  font-size: 12px;
+  line-height: 1.9;
+  letter-spacing: 0.5px;
+
+  color: rgba(200, 205, 215, 0.42);
+    }
+
+    .desc .gap {
+      display: block;
+      height: 28px;
+    }
+
+    .sound-note {
+      margin-top: 34px;
+      font-size: 13px;
+      letter-spacing: 4px;
+      opacity: 0.34;
+      font-family: Arial, "PingFang SC", sans-serif;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 58px;
+      padding: 13px 34px;
+      border: 1px solid rgba(255,255,255,0.18);
+      color: rgba(240,240,240,0.86);
+      text-decoration: none;
+      font-size: 15px;
+      letter-spacing: 4px;
+      transition: 0.35s ease;
+      background: rgba(255,255,255,0.015);
+    }
+
+    .btn:hover {
+      border-color: rgba(255,255,255,0.56);
+      background: rgba(255,255,255,0.05);
+      transform: translateY(-3px);
+      box-shadow: 0 0 28px rgba(180,190,220,0.09);
+    }
+
+    @media (max-width: 640px) {
+      .wrap {
+        padding: 42px 20px;
+        align-items: flex-start;
+      }
+
+      h1 {
+        font-size: 56px;
+        letter-spacing: 10px;
+        margin-top: 12px;
+      }
+
+      .sub {
+        font-size: 12px;
+        letter-spacing: 5px;
+      }
+
+      .portrait-wrap {
+        width: 230px;
+        height: 230px;
+        margin-top: 38px;
+      }
+
+      .desc {
+        font-size: 17px;
+        line-height: 2;
+        margin-top: 48px;
+      }
+
+      .btn {
+        margin-top: 52px;
+      }
+    }
+
+    .tracks {
+  margin: 42px auto 0;
+  width: 100%;
+  max-width: 520px;
+
+  text-align: left;
+  border-top: 1px solid rgba(255,255,255,0.10);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  padding: 22px 0 16px;
+
+  /* 关键：左侧“呼吸边界” */
+  padding-left: 6px;
+}
+
+.tracks-title {
+  text-align: center;
+  font-size: 14px;
+  letter-spacing: 5px;
+  opacity: 0.52;
+  margin-bottom: 18px;
+}
+
+.track {
+  display: grid;
+  grid-template-columns: 42px 1fr;
+  column-gap: 18px;
+  row-gap: 3px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(255,255,255,0.05);
+
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  transition: 0.28s ease;
+}
+
+.track:first-of-type {
+  border-top: none;
+}
+
+.track:hover {
+  transform: translateX(4px);
+}
+
+.track:hover strong {
+  color: rgba(255,255,255,0.94);
+}
+
+.track:hover em {
+  color: rgba(205,210,225,0.52);
+}
+
+.track span {
+  grid-column: 1;
+  grid-row: 1 / 3;
+  font-size: 13px;
+  letter-spacing: 1.5px;
+  padding-top: 2px;
+
+  color: rgba(232,232,232,0.35);
+  text-decoration: none;
+}
+
+.track strong {
+  grid-column: 2;
+  grid-row: 1;
+  display: block;
+
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: 1px;
+  color: rgba(240,240,240,0.86);
+  white-space: nowrap;
+  text-decoration: none;
+
+  transition: 0.28s ease;
+}
+
+.track em {
+  grid-column: 2;
+  grid-row: 2;
+  display: block;
+  margin-top: 3px;
+
+  font-size: 12px;
+  font-style: normal;
+  letter-spacing: 0.8px;
+  line-height: 1.5;
+  white-space: normal;
+
+  color: rgba(185,190,205,0.38);
+  text-decoration: none;
+
+  transition: 0.28s ease;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  margin: 14px 0 20px;
+
+  background: linear-gradient(
+    to right,
+    transparent,
+    rgba(255,255,255,0.22),
+    rgba(255,255,255,0.35),
+    rgba(255,255,255,0.22),
+    transparent
+  );
+
+  box-shadow: 0 0 12px rgba(120,140,180,0.08);
+}
+
+.nav {
+  position: fixed;
+  top: 24px;
+  right: 36px;
+  z-index: 10;
+
+  display: flex;
+  gap: 28px;
+  align-items: center;
+
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: rgba(232,232,232,0.46);
+}
+
+.nav a {
+  color: inherit;
+  text-decoration: none;
+  transition: 0.28s ease;
+}
+
+.nav a:hover {
+  color: rgba(255,255,255,0.86);
+  text-shadow: 0 0 18px rgba(180,190,220,0.18);
+}
+  </style>
+</head>
+
+<body>
+<nav class="nav">
+  <a href="index.html">HOME</a>
+  <a href="#">焚野</a>
+  <a href="wind.html">风徵</a>
+  <a href="#">鸾音</a>
+</nav>
+  <div class="bg"></div>
+  <div class="mist"></div>
+  <div class="grain"></div>
+
+  <main class="wrap">
+    <section class="content">
+
+      <h1>风徵</h1>
+
+      <div class="sub">ONEIROVORE · 夜之影</div>
+
+      <div class="portrait-wrap">
+        <img src="images/wind.png" class="portrait" alt="风徵人物照" />
+      </div>
+
+      <div class="desc">
+        夜是缓慢下沉的声音。<br>
+        他不歌唱，他只是经过。
+        <span class="gap"></span>
+        风徵 · 迷幻摇滚 · 冷感叙事 · 空灵声像<br>
+        像梦醒之前最后一段回声。
+      </div>
+<div class="tracks">
+  <div class="tracks-title">《夜水集》</div>
+  <div class="divider"></div>
+
+  <a class="track" href="player.html?artist=wind&track=0">
+    <span>01</span>
+    <strong>照影</strong>
+    <em>寒汀 · 水影 · 迷幻摇滚</em>
+  </a>
+
+  <a class="track" href="player.html?artist=wind&track=1">
+    <span>02</span>
+    <strong>慢慢的</strong>
+    <em>夜行 · 归岸 · 慢歌</em>
+  </a>
+
+  <a class="track" href="player.html?artist=wind&track=2">
+    <span>03</span>
+    <strong>三条鱼</strong>
+    <em>北冥 · 濠梁 · 江湖</em>
+  </a>
+
+  <a class="track" href="player.html?artist=wind&track=3">
+    <span>04</span>
+    <strong>鸾鸟自歌</strong>
+    <em>月下 · 孤鸣 · 箫声</em>
+  </a>
+
+  <a class="track" href="player.html?artist=wind&track=4">
+    <span>05</span>
+    <strong>那只停下来看蚂蚁搬家的鹰</strong>
+    <em>荒原 · 低空 · 凝视</em>
+  </a>
+
+  <a class="track" href="player.html?artist=wind&track=5">
+    <span>06</span>
+    <strong>追声</strong>
+    <em>马王堆 · 古弦 · 回响</em>
+  </a>
+
+  <a class="track" href="player.html?artist=wind&track=6">
+    <span>07</span>
+    <strong>渡我二毛</strong>
+    <em>旧桥 · 人间 · 回声</em>
+  </a>
+
+  <a class="track" href="player.html?artist=wind&track=7">
+    <span>08</span>
+    <strong>山海·之间</strong>
+    <em>孤山 · 古海 · 风徵版</em>
+  </a>
+</div>
+
+</div>
+      <div class="sound-note">
+        WIND · LOW DRONE · DISTANT ECHO
+      </div>
+
+      <a class="btn" href="index.html">返回首页</a>
+
+    </section>
+  </main>
+
+</body>
+</html>
